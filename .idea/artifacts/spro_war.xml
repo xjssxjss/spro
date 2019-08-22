@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="spro:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="spro-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="spro:war exploded" />
+    </root>
+  </artifact>
+</component>

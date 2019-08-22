@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.JobInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.job.JobInfo" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="FIS_MON_ID" property="fisMonId" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" />
+    <result column="SUBMITER" property="submiter" jdbcType="DECIMAL" />
+    <result column="WAYBILL_NO" property="waybillNo" jdbcType="VARCHAR" />
+    <result column="EXPRESS_COMPANY" property="expressCompany" jdbcType="VARCHAR" />
+    <result column="SEND_TIME" property="sendTime" jdbcType="TIMESTAMP" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="QR_CODE" property="qrCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, CODE, STATUS, FIS_MON_ID, CREATE_TIME, SUBMIT_TIME, SUBMITER, WAYBILL_NO, EXPRESS_COMPANY, 
+    SEND_TIME, REMARK, QR_CODE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ws_job_info
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_ws_job_info
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.job.JobInfo" useGeneratedKeys="true" keyProperty="id">
+    insert into t_ws_job_info (ID, CODE, STATUS, 
+      FIS_MON_ID, CREATE_TIME, SUBMIT_TIME, 
+      SUBMITER, WAYBILL_NO, EXPRESS_COMPANY, 
+      SEND_TIME, REMARK, QR_CODE
+      )
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{fisMonId,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{submitTime,jdbcType=TIMESTAMP}, 
+      #{submiter,jdbcType=DECIMAL}, #{waybillNo,jdbcType=VARCHAR}, #{expressCompany,jdbcType=VARCHAR}, 
+      #{sendTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{qrCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.job.JobInfo" >
+    insert into t_ws_job_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="code != null" >
+        CODE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="fisMonId != null" >
+        FIS_MON_ID,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="submitTime != null" >
+        SUBMIT_TIME,
+      </if>
+      <if test="submiter != null" >
+        SUBMITER,
+      </if>
+      <if test="waybillNo != null" >
+        WAYBILL_NO,
+      </if>
+      <if test="expressCompany != null" >
+        EXPRESS_COMPANY,
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="qrCode != null" >
+        QR_CODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="fisMonId != null" >
+        #{fisMonId,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submitTime != null" >
+        #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submiter != null" >
+        #{submiter,jdbcType=DECIMAL},
+      </if>
+      <if test="waybillNo != null" >
+        #{waybillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="expressCompany != null" >
+        #{expressCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="qrCode != null" >
+        #{qrCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.job.JobInfo" >
+    update t_ws_job_info
+    <set >
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="fisMonId != null" >
+        FIS_MON_ID = #{fisMonId,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submitTime != null" >
+        SUBMIT_TIME = #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submiter != null" >
+        SUBMITER = #{submiter,jdbcType=DECIMAL},
+      </if>
+      <if test="waybillNo != null" >
+        WAYBILL_NO = #{waybillNo,jdbcType=VARCHAR},
+      </if>
+      <if test="expressCompany != null" >
+        EXPRESS_COMPANY = #{expressCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="qrCode != null" >
+        QR_CODE = #{qrCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.job.JobInfo" >
+    update t_ws_job_info
+    set CODE = #{code,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      FIS_MON_ID = #{fisMonId,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      SUBMIT_TIME = #{submitTime,jdbcType=TIMESTAMP},
+      SUBMITER = #{submiter,jdbcType=DECIMAL},
+      WAYBILL_NO = #{waybillNo,jdbcType=VARCHAR},
+      EXPRESS_COMPANY = #{expressCompany,jdbcType=VARCHAR},
+      SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      QR_CODE = #{qrCode,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

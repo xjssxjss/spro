@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://D:\GIT\spro\jdk18-test\jdk18-test.iml" filepath="D:\GIT\spro\jdk18-test\jdk18-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shiro-test/shiro-test.iml" filepath="$PROJECT_DIR$/shiro-test/shiro-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spro.iml" filepath="$PROJECT_DIR$/spro.iml" />
+    </modules>
+  </component>
+</project>

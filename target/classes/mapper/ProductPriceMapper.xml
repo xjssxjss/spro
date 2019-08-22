@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.ProductPriceMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.job.ProductPrice" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="PROXY_LEVEL_ID" property="proxyLevelId" jdbcType="INTEGER" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="INTEGER" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, PROXY_LEVEL_ID, PRODUCT_ID, PRICE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ws_product_price
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- queryPriceByProxyLevelAndProduct -->
+  <select id="queryPriceByProxyLevelAndProduct" resultType="java.math.BigDecimal">
+    select
+        PRICE
+    from
+        t_ws_product_price price
+    where 1=1
+    and PROXY_LEVEL_ID = #{proxyLevelId,jdbcType=INTEGER}
+    and PRODUCT_ID = #{productId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_ws_product_price
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.job.ProductPrice" >
+    insert into t_ws_product_price (ID, PROXY_LEVEL_ID, PRODUCT_ID, 
+      PRICE)
+    values (#{id,jdbcType=INTEGER}, #{proxyLevelId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
+      #{price,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.job.ProductPrice" >
+    insert into t_ws_product_price
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="proxyLevelId != null" >
+        PROXY_LEVEL_ID,
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="proxyLevelId != null" >
+        #{proxyLevelId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.job.ProductPrice" >
+    update t_ws_product_price
+    <set >
+      <if test="proxyLevelId != null" >
+        PROXY_LEVEL_ID = #{proxyLevelId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.job.ProductPrice" >
+    update t_ws_product_price
+    set PROXY_LEVEL_ID = #{proxyLevelId,jdbcType=INTEGER},
+      PRODUCT_ID = #{productId,jdbcType=INTEGER},
+      PRICE = #{price,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

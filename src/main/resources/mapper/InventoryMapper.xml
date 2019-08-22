@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.InventoryMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.material.Inventory" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <!--<result column="PRODUCT_ID" property="productId" jdbcType="INTEGER" />-->
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <!--<result column="PROXY_LEVEL_ID" property="proxyLevelId" jdbcType="INTEGER" />-->
+    <result column="DN_CODE" property="dnCode" jdbcType="VARCHAR" />
+    <result column="DN_QTY" property="dnQty" jdbcType="INTEGER" />
+    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" />
+    <result column="LOCKED_QTY" property="lockedQty" jdbcType="INTEGER" />
+    <result column="CHECK_IN_TIME" property="checkInTime" jdbcType="TIMESTAMP" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <association property="product" resultMap="productMap"></association>
+    <association property="proxyLevel" resultMap="proxyLevelMap"></association>
+  </resultMap>
+  <resultMap id="productMap" type="com.spro.entity.material.Product">
+    <id column="productId" property="id" jdbcType="INTEGER"/>
+    <result column="productName" property="productName" jdbcType="VARCHAR"/>
+  </resultMap>
+  <resultMap id="proxyLevelMap" type="com.spro.entity.DictionaryEntries">
+    <id column="proxyLevelId" property="id" jdbcType="INTEGER"/>
+    <result column="proxyLevelName" property="chineseName" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, PRODUCT_ID, PRICE, PROXY_LEVEL_ID, DN_CODE, DN_QTY, TOTAL_QTY, LOCKED_QTY, CHECK_IN_TIME, 
+    REMARK
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mt_inventory
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- queryTotal -->
+  <select id="queryInventoryTotalCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(inv.id) as totalCount
+    from
+    t_mt_inventory inv,
+    t_mt_product product,
+    t_bi_dictionary_entries proxyLevel
+    where 1=1
+    and inv.PRODUCT_ID = product.ID
+    and inv.PROXY_LEVEL_ID = proxyLevel.ID
+    <if test="productName != null" >
+      and product.PRODUCT_NAME like #{productName,jdbcType=VARCHAR}
+    </if>
+    <if test="proxyLevel != null" >
+      and proxyLevel.id in
+      <foreach collection="proxyLevel" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+
+  <!-- queryInventoryByProductId -->
+  <select id="queryInventoryByProductId" resultType="java.util.Map" parameterType="java.lang.Integer">
+    select
+        sum(TOTAL_QTY-LOCKED_QTY) as canUseQty
+        from t_mt_inventory inv
+    where 1=1
+      and inv.PRODUCT_ID = #{productId,jdbcType=INTEGER}
+    GROUP BY inv.PRODUCT_ID
+  </select>
+
+  <!-- queryByParams -->
+  <select id="queryByParams" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select product.code,product.id as productId,PRODUCT_NAME as productName,proxyLevel.CHINESE_NAME as proxyLevelName,inv.*,proxyLevel.id as proxyLevelId from
+        t_mt_inventory inv,
+        t_mt_product product,
+        t_bi_dictionary_entries proxyLevel
+    where 1=1
+    and inv.PRODUCT_ID = product.ID
+    and inv.PROXY_LEVEL_ID = proxyLevel.ID
+    <if test="productName != null" >
+      and product.PRODUCT_NAME like #{productName,jdbcType=VARCHAR}
+    </if>
+    <if test="proxyLevel != null" >
+      and proxyLevel.id in
+      <foreach collection="proxyLevel" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+
+  <!-- 查询统计的库存结果集 -->
+  <select id="queryCountInventory" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+        SUM(inv.TOTAL_QTY) as totalQty,
+        SUM(inv.LOCKED_QTY) as lockedQty,
+        SUM(inv.TOTAL_QTY-inv.LOCKED_QTY) as canUseTotalQty,
+        ROUND(SUM(inv.PRICE*TOTAL_QTY),2) as totalPrice,
+        ROUND(SUM(inv.price*(inv.TOTAL_QTY-inv.LOCKED_QTY)),2) as canUseTotalPrice
+    from
+        t_mt_inventory inv,
+        t_mt_product product,
+        t_bi_dictionary_entries proxyLevel
+    where 1=1
+    and inv.PRODUCT_ID = product.ID
+    and inv.PROXY_LEVEL_ID = proxyLevel.ID
+    <if test="productName != null" >
+      and product.PRODUCT_NAME like #{productName,jdbcType=VARCHAR}
+    </if>
+    <if test="proxyLevel != null" >
+      and proxyLevel.id in
+      <foreach collection="proxyLevel" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_mt_inventory
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.spro.entity.material.Inventory" >
+    insert into t_mt_inventory (ID, PRODUCT_ID, PRICE, 
+      PROXY_LEVEL_ID, DN_CODE, DN_QTY, 
+      TOTAL_QTY, LOCKED_QTY, CHECK_IN_TIME, 
+      REMARK)
+    values (#{id,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, 
+      #{proxyLevelId,jdbcType=INTEGER}, #{dnCode,jdbcType=VARCHAR}, #{dnQty,jdbcType=INTEGER}, 
+      #{totalQty,jdbcType=INTEGER}, #{lockedQty,jdbcType=INTEGER}, #{checkInTime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.material.Inventory" >
+    insert into t_mt_inventory
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+      <if test="proxyLevelId != null" >
+        PROXY_LEVEL_ID,
+      </if>
+      <if test="dnCode != null" >
+        DN_CODE,
+      </if>
+      <if test="dnQty != null" >
+        DN_QTY,
+      </if>
+      <if test="totalQty != null" >
+        TOTAL_QTY,
+      </if>
+      <if test="lockedQty != null" >
+        LOCKED_QTY,
+      </if>
+      <if test="checkInTime != null" >
+        CHECK_IN_TIME,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="proxyLevelId != null" >
+        #{proxyLevelId,jdbcType=INTEGER},
+      </if>
+      <if test="dnCode != null" >
+        #{dnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dnQty != null" >
+        #{dnQty,jdbcType=INTEGER},
+      </if>
+      <if test="totalQty != null" >
+        #{totalQty,jdbcType=INTEGER},
+      </if>
+      <if test="lockedQty != null" >
+        #{lockedQty,jdbcType=INTEGER},
+      </if>
+      <if test="checkInTime != null" >
+        #{checkInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.material.Inventory" >
+    update t_mt_inventory
+    <set >
+      <if test="productId != null" >
+        PRODUCT_ID = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="proxyLevelId != null" >
+        PROXY_LEVEL_ID = #{proxyLevelId,jdbcType=INTEGER},
+      </if>
+      <if test="dnCode != null" >
+        DN_CODE = #{dnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dnQty != null" >
+        DN_QTY = #{dnQty,jdbcType=INTEGER},
+      </if>
+      <if test="totalQty != null" >
+        TOTAL_QTY = #{totalQty,jdbcType=INTEGER},
+      </if>
+      <if test="lockedQty != null" >
+        LOCKED_QTY = #{lockedQty,jdbcType=INTEGER},
+      </if>
+      <if test="checkInTime != null" >
+        CHECK_IN_TIME = #{checkInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.material.Inventory" >
+    update t_mt_inventory
+    set PRODUCT_ID = #{productId,jdbcType=INTEGER},
+      PRICE = #{price,jdbcType=DECIMAL},
+      PROXY_LEVEL_ID = #{proxyLevelId,jdbcType=INTEGER},
+      DN_CODE = #{dnCode,jdbcType=VARCHAR},
+      DN_QTY = #{dnQty,jdbcType=INTEGER},
+      TOTAL_QTY = #{totalQty,jdbcType=INTEGER},
+      LOCKED_QTY = #{lockedQty,jdbcType=INTEGER},
+      CHECK_IN_TIME = #{checkInTime,jdbcType=TIMESTAMP},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

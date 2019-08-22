@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.DictionaryEntriesMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.DictionaryEntries" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="CHINESE_NAME" property="chineseName" jdbcType="VARCHAR" />
+    <result column="ENGLISH_NAME" property="englishName" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="DICT_ID" property="dictId" jdbcType="INTEGER" />
+    <result column="DICT_CODE" property="dictCode" jdbcType="VARCHAR" />
+    <result column="PARENT_ID" property="parentId" jdbcType="INTEGER" />
+    <result column="EXT1" property="ext1" jdbcType="DECIMAL" />
+    <result column="EXT2" property="ext2" jdbcType="VARCHAR" />
+    <result column="EXT3" property="ext3" jdbcType="VARCHAR" />
+    <result column="ORDINAL" property="ordinal" jdbcType="INTEGER" />
+    <result column="IS_VALID" property="isValid" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, CODE, CHINESE_NAME, ENGLISH_NAME, DESCRIPTION, DICT_ID, DICT_CODE, PARENT_ID, 
+    EXT1, EXT2, EXT3, ORDINAL, IS_VALID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_bi_dictionary_entries
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_bi_dictionary_entries
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.DictionaryEntries" >
+    insert into t_bi_dictionary_entries (ID, CODE, CHINESE_NAME, 
+      ENGLISH_NAME, DESCRIPTION, DICT_ID, 
+      DICT_CODE, PARENT_ID, EXT1, 
+      EXT2, EXT3, ORDINAL, 
+      IS_VALID)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{chineseName,jdbcType=VARCHAR}, 
+      #{englishName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{dictId,jdbcType=INTEGER}, 
+      #{dictCode,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, #{ext1,jdbcType=DECIMAL}, 
+      #{ext2,jdbcType=VARCHAR}, #{ext3,jdbcType=VARCHAR}, #{ordinal,jdbcType=INTEGER}, 
+      #{isValid,jdbcType=BIT})
+  </insert>
+
+  <select id="queryByParams" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List" />
+  from t_bi_dictionary_entries
+  WHERE 1 = 1
+  <if test="code != null">
+    AND code LIKE #{code,jdbcType=VARCHAR}
+  </if>
+</select>
+
+  <select id="queryByDictCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_bi_dictionary_entries
+    WHERE 1 = 1
+    <if test="dictCode != null">
+      AND dict_code = #{dictCode}
+    </if>
+    AND  is_valid = 1
+  </select>
+
+  <select id="queryByCode" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_bi_dictionary_entries
+    WHERE 1 = 1
+    <if test="code != null">
+      AND code LIKE #{code,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <!-- 根据中文名称匹配对象 -->
+  <select id="queryByDictionaryEntriesName" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_bi_dictionary_entries
+    WHERE 1 = 1
+    <if test="chineseName != null">
+      AND CHINESE_NAME = #{chineseName,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <insert id="insertSelective" parameterType="com.spro.entity.DictionaryEntries" >
+    insert into t_bi_dictionary_entries
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="code != null" >
+        CODE,
+      </if>
+      <if test="chineseName != null" >
+        CHINESE_NAME,
+      </if>
+      <if test="englishName != null" >
+        ENGLISH_NAME,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+      <if test="dictId != null" >
+        DICT_ID,
+      </if>
+      <if test="dictCode != null" >
+        DICT_CODE,
+      </if>
+      <if test="parentId != null" >
+        PARENT_ID,
+      </if>
+      <if test="ext1 != null" >
+        EXT1,
+      </if>
+      <if test="ext2 != null" >
+        EXT2,
+      </if>
+      <if test="ext3 != null" >
+        EXT3,
+      </if>
+      <if test="ordinal != null" >
+        ORDINAL,
+      </if>
+      <if test="isValid != null" >
+        IS_VALID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="chineseName != null" >
+        #{chineseName,jdbcType=VARCHAR},
+      </if>
+      <if test="englishName != null" >
+        #{englishName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="dictId != null" >
+        #{dictId,jdbcType=INTEGER},
+      </if>
+      <if test="dictCode != null" >
+        #{dictCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="ext1 != null" >
+        #{ext1,jdbcType=DECIMAL},
+      </if>
+      <if test="ext2 != null" >
+        #{ext2,jdbcType=VARCHAR},
+      </if>
+      <if test="ext3 != null" >
+        #{ext3,jdbcType=VARCHAR},
+      </if>
+      <if test="ordinal != null" >
+        #{ordinal,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.DictionaryEntries" >
+    update t_bi_dictionary_entries
+    <set >
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="chineseName != null" >
+        CHINESE_NAME = #{chineseName,jdbcType=VARCHAR},
+      </if>
+      <if test="englishName != null" >
+        ENGLISH_NAME = #{englishName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="dictId != null" >
+        DICT_ID = #{dictId,jdbcType=INTEGER},
+      </if>
+      <if test="dictCode != null" >
+        DICT_CODE = #{dictCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        PARENT_ID = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="ext1 != null" >
+        EXT1 = #{ext1,jdbcType=DECIMAL},
+      </if>
+      <if test="ext2 != null" >
+        EXT2 = #{ext2,jdbcType=VARCHAR},
+      </if>
+      <if test="ext3 != null" >
+        EXT3 = #{ext3,jdbcType=VARCHAR},
+      </if>
+      <if test="ordinal != null" >
+        ORDINAL = #{ordinal,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        IS_VALID = #{isValid,jdbcType=BIT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.DictionaryEntries" >
+    update t_bi_dictionary_entries
+    set CODE = #{code,jdbcType=VARCHAR},
+      CHINESE_NAME = #{chineseName,jdbcType=VARCHAR},
+      ENGLISH_NAME = #{englishName,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR},
+      DICT_ID = #{dictId,jdbcType=INTEGER},
+      DICT_CODE = #{dictCode,jdbcType=VARCHAR},
+      PARENT_ID = #{parentId,jdbcType=INTEGER},
+      EXT1 = #{ext1,jdbcType=DECIMAL},
+      EXT2 = #{ext2,jdbcType=VARCHAR},
+      EXT3 = #{ext3,jdbcType=VARCHAR},
+      ORDINAL = #{ordinal,jdbcType=INTEGER},
+      IS_VALID = #{isValid,jdbcType=BIT}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

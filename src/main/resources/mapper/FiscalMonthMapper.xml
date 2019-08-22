@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.FiscalMonthMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.finance.FiscalMonth" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="FISCAL_MONTH" property="fiscalMonth" jdbcType="VARCHAR" />
+    <result column="PRE_FIS_MON_ID" property="preFisMonId" jdbcType="DECIMAL" />
+    <result column="BEGIN_TIME" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="END_TIME" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
+    <result column="IS_CURRENT" property="isCurrent" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, FISCAL_MONTH, PRE_FIS_MON_ID, BEGIN_TIME, END_TIME, CREATOR, IS_CURRENT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_fi_fiscal_month
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <!-- 查询当前财务月 -->
+  <select id="queryCurrentFiscalMonth" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_fi_fiscal_month
+    where IS_CURRENT = 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_fi_fiscal_month
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.finance.FiscalMonth" >
+    insert into t_fi_fiscal_month (ID, FISCAL_MONTH, PRE_FIS_MON_ID, 
+      BEGIN_TIME, END_TIME, CREATOR, 
+      IS_CURRENT)
+    values (#{id,jdbcType=DECIMAL}, #{fiscalMonth,jdbcType=VARCHAR}, #{preFisMonId,jdbcType=DECIMAL}, 
+      #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, 
+      #{isCurrent,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.finance.FiscalMonth" >
+    insert into t_fi_fiscal_month
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="fiscalMonth != null" >
+        FISCAL_MONTH,
+      </if>
+      <if test="preFisMonId != null" >
+        PRE_FIS_MON_ID,
+      </if>
+      <if test="beginTime != null" >
+        BEGIN_TIME,
+      </if>
+      <if test="endTime != null" >
+        END_TIME,
+      </if>
+      <if test="creator != null" >
+        CREATOR,
+      </if>
+      <if test="isCurrent != null" >
+        IS_CURRENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="fiscalMonth != null" >
+        #{fiscalMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="preFisMonId != null" >
+        #{preFisMonId,jdbcType=DECIMAL},
+      </if>
+      <if test="beginTime != null" >
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="isCurrent != null" >
+        #{isCurrent,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.finance.FiscalMonth" >
+    update t_fi_fiscal_month
+    <set >
+      <if test="fiscalMonth != null" >
+        FISCAL_MONTH = #{fiscalMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="preFisMonId != null" >
+        PRE_FIS_MON_ID = #{preFisMonId,jdbcType=DECIMAL},
+      </if>
+      <if test="beginTime != null" >
+        BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null" >
+        CREATOR = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="isCurrent != null" >
+        IS_CURRENT = #{isCurrent,jdbcType=BIT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.finance.FiscalMonth" >
+    update t_fi_fiscal_month
+    set FISCAL_MONTH = #{fiscalMonth,jdbcType=VARCHAR},
+      PRE_FIS_MON_ID = #{preFisMonId,jdbcType=DECIMAL},
+      BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
+      END_TIME = #{endTime,jdbcType=TIMESTAMP},
+      CREATOR = #{creator,jdbcType=VARCHAR},
+      IS_CURRENT = #{isCurrent,jdbcType=BIT}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

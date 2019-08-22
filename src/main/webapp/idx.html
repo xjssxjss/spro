@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="easyui/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="easyui/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" href="easyui/themes/icon.css" type="text/css"></link>
+    <link rel="stylesheet" href="easyui/themes/bootstrap/easyui.css" type="text/css"></link>
+</head>
+<body>
+    <table id="dg"></table>
+    <button id = "clkMe">click me!</button>
+
+
+    <script type="text/javascript">
+        var columns = [];
+
+        columns.push([
+            {field:'code',title:'Code',width:300},
+            {field:'name',title:'Name',width:300},
+            {field:'price',title:'Price',width:300,align:'right'}
+        ]);
+
+        $('#dg').datagrid({
+            columns:columns
+        });
+
+        $('#clkMe').click(function(){
+            debugger
+            //首先清空数据
+            columns.splice(0,columns.length);
+            console.log(columns); // 输出 []，空数组，即被清空了
+
+            var column1 = [{field:'code',title:'Code',width:300},
+                {field:'name',title:'Name',width:300}];
+            //只显示两列
+            columns.push(column1);
+            $('#dg').datagrid({
+                columns:columns
+            });
+            $('#dg').datagrid().reload();
+        });
+
+    </script>
+</body>
+</html>

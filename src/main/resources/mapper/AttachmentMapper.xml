@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.AttachmentMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.sys.Attachment" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="SLIP_ID" property="slipId" jdbcType="DECIMAL" />
+    <result column="SLIP_TYPE" property="slipType" jdbcType="VARCHAR" />
+    <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" />
+    <result column="FILE_SAVE_NAME" property="fileSaveName" jdbcType="VARCHAR" />
+    <result column="FILE_PATH" property="filePath" jdbcType="VARCHAR" />
+    <!--<result column="FILE_TYPE" property="fileType" jdbcType="INTEGER" />-->
+    <result column="UPLOAD_TIME" property="uploadTime" jdbcType="TIMESTAMP" />
+    <result column="UPLOAD_USER" property="uploadUser" jdbcType="VARCHAR" />
+    <result column="FILE_SIZE" property="fileSize" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="IS_VALID" property="isValid" jdbcType="BIT" />
+    <association resultMap="attachFileType" property="attach"></association>
+  </resultMap>
+
+  <!-- 数据字典条目 -->
+  <resultMap id="attachFileType" type="com.spro.entity.DictionaryEntries">
+    <id column="ID" property="id" jdbcType="INTEGER"/>
+    <result column="CODE" property="code" jdbcType="VARCHAR"/>
+    <result column="typeName" property="chineseName" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID, SLIP_ID, SLIP_TYPE, FILE_NAME, FILE_SAVE_NAME, FILE_PATH, FILE_TYPE, UPLOAD_TIME, 
+    UPLOAD_USER, FILE_SIZE, REMARK, IS_VALID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_attachments
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 分页查询附件列表 -->
+  <select id="queryListAttachments" resultMap="BaseResultMap">
+      SELECT
+          attach.ID,attach.FILE_NAME,attach.FILE_SAVE_NAME,attach.UPLOAD_TIME,attach.FILE_SIZE,attach.REMARK,attach.UPLOAD_USER,dic.CHINESE_NAME as typeName
+      FROM `t_sys_attachments` attach,
+                  t_bi_dictionary_entries dic
+      where attach.FILE_TYPE = dic.ID
+      and attach.IS_VALID = 1
+      and dic.IS_VALID = 1
+  </select>
+
+  <!-- 查询有效附件总数 -->
+  <select id="queryListAttachmentsCount" resultType="java.lang.Integer">
+    SELECT
+    count(attach.ID) as totalAttach
+    FROM `t_sys_attachments` attach,
+    t_bi_dictionary_entries dic
+    where attach.FILE_TYPE = dic.ID
+    and attach.IS_VALID = 1
+    and dic.IS_VALID = 1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_sys_attachments
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.sys.Attachment" >
+    insert into t_sys_attachments (ID, SLIP_ID, SLIP_TYPE, 
+      FILE_NAME, FILE_SAVE_NAME, FILE_PATH, 
+      FILE_TYPE, UPLOAD_TIME, UPLOAD_USER, 
+      FILE_SIZE, REMARK, IS_VALID
+      )
+    values (#{id,jdbcType=INTEGER}, #{slipId,jdbcType=DECIMAL}, #{slipType,jdbcType=VARCHAR}, 
+      #{fileName,jdbcType=VARCHAR}, #{fileSaveName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, 
+      #{fileType,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, #{uploadUser,jdbcType=VARCHAR}, 
+      #{fileSize,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{isValid,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.sys.Attachment" >
+    insert into t_sys_attachments
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="slipId != null" >
+        SLIP_ID,
+      </if>
+      <if test="slipType != null" >
+        SLIP_TYPE,
+      </if>
+      <if test="fileName != null" >
+        FILE_NAME,
+      </if>
+      <if test="fileSaveName != null" >
+        FILE_SAVE_NAME,
+      </if>
+      <if test="filePath != null" >
+        FILE_PATH,
+      </if>
+      <if test="fileType != null" >
+        FILE_TYPE,
+      </if>
+      <if test="uploadTime != null" >
+        UPLOAD_TIME,
+      </if>
+      <if test="uploadUser != null" >
+        UPLOAD_USER,
+      </if>
+      <if test="fileSize != null" >
+        FILE_SIZE,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="isValid != null" >
+        IS_VALID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="slipId != null" >
+        #{slipId,jdbcType=DECIMAL},
+      </if>
+      <if test="slipType != null" >
+        #{slipType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSaveName != null" >
+        #{fileSaveName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null" >
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null" >
+        #{fileType,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null" >
+        #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadUser != null" >
+        #{uploadUser,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null" >
+        #{fileSize,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.sys.Attachment" >
+    update t_sys_attachments
+    <set >
+      <if test="slipId != null" >
+        SLIP_ID = #{slipId,jdbcType=DECIMAL},
+      </if>
+      <if test="slipType != null" >
+        SLIP_TYPE = #{slipType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        FILE_NAME = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSaveName != null" >
+        FILE_SAVE_NAME = #{fileSaveName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null" >
+        FILE_PATH = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null" >
+        FILE_TYPE = #{fileType,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null" >
+        UPLOAD_TIME = #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadUser != null" >
+        UPLOAD_USER = #{uploadUser,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null" >
+        FILE_SIZE = #{fileSize,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        IS_VALID = #{isValid,jdbcType=BIT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.sys.Attachment" >
+    update t_sys_attachments
+    set SLIP_ID = #{slipId,jdbcType=DECIMAL},
+      SLIP_TYPE = #{slipType,jdbcType=VARCHAR},
+      FILE_NAME = #{fileName,jdbcType=VARCHAR},
+      FILE_SAVE_NAME = #{fileSaveName,jdbcType=VARCHAR},
+      FILE_PATH = #{filePath,jdbcType=VARCHAR},
+      FILE_TYPE = #{fileType,jdbcType=INTEGER},
+      UPLOAD_TIME = #{uploadTime,jdbcType=TIMESTAMP},
+      UPLOAD_USER = #{uploadUser,jdbcType=VARCHAR},
+      FILE_SIZE = #{fileSize,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      IS_VALID = #{isValid,jdbcType=BIT}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

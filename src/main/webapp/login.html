@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>spro管理系统</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src = "https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <style type="text/css">
+        body {
+            width: 100%;
+            height:100%;
+            margin:0;
+            padding: 0;
+            background-image: url("upload/bg.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .user_login_dialog{
+            width : 33%;
+            height: 40%;
+        }
+    </style>
+</head>
+<body>
+<div id="index">
+        <el-dialog
+                title="登录"
+                :visible.sync="centerDialogVisible"
+                left
+                :show-close="!centerDialogVisible"
+                :modal="!centerDialogVisible"
+                :close-on-click-modal="!centerDialogVisible"
+                top="25vh"
+                custom-class="user_login_dialog"
+                >
+
+             <el-form :model="userForm" ref="userForm" :label-position="labelPosition" label-width="70px" :rules="rules">
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="userForm.username"></el-input>
+                </el-form-item>
+
+                <el-form-item label="密 码"  prop="password">
+                    <el-input type="password" v-model="userForm.password"></el-input>
+                </el-form-item>
+
+                 <el-form-item>
+                     <el-button @click="resetForm('userForm')">重置</el-button>
+                     <el-button type="primary" @click="doLogin('userForm')">登录</el-button>
+                 </el-form-item>
+            </el-form>
+
+        </el-dialog>
+    </div>
+</body>
+<script>
+    new Vue({
+        el:'#index',
+        data:{
+            centerDialogVisible:true,
+            labelPosition:'right',
+            userForm:{
+                username:'',
+                password:''
+            },
+            rules:{
+                username:{
+                    required: true,
+                    message: '用户名不可为空!',
+                    trigger: 'blur'
+                },
+                password:{
+                    required: true,
+                    message: '用户密码不可为空!',
+                    trigger: 'blur'
+                }
+            }
+        },
+        methods:{
+            doLogin (formName){
+                debugger
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        console.log('登录成功...');
+                        this.$http.get('http://localhost:8086/spro/loginController/login?username='+this.userForm.username+'&password='+this.userForm.password).then((result)=>{
+
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName){
+                console.log('formName' + formName);
+                this.$refs[formName].resetFields();
+            }
+        }
+    });
+</script>
+</html>

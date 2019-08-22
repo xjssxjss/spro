@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.EmailMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.sys.Email" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SLIP_ID" property="slipId" jdbcType="DECIMAL" />
+    <result column="SLIP_CODE" property="slipCode" jdbcType="VARCHAR" />
+    <result column="SLIP_TYPE" property="slipType" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="SEND_TIME" property="sendTime" jdbcType="TIMESTAMP" />
+    <result column="SUBJECT" property="subject" jdbcType="VARCHAR" />
+    <result column="BODY" property="body" jdbcType="VARCHAR" />
+    <result column="ADDR" property="addr" jdbcType="VARCHAR" />
+    <result column="CC" property="cc" jdbcType="VARCHAR" />
+    <result column="BCC" property="bcc" jdbcType="VARCHAR" />
+    <result column="ERROR_MSG" property="errorMsg" jdbcType="VARCHAR" />
+    <result column="TRY_COUNT" property="tryCount" jdbcType="INTEGER" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID, SLIP_ID, SLIP_CODE, SLIP_TYPE, TYPE, STATUS, CREATE_TIME, SEND_TIME, SUBJECT, 
+    BODY, ADDR, CC, BCC, ERROR_MSG, TRY_COUNT, REMARK
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_email
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_sys_email
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.sys.Email" >
+    insert into t_sys_email (ID, SLIP_ID, SLIP_CODE, 
+      SLIP_TYPE, TYPE, STATUS, 
+      CREATE_TIME, SEND_TIME, SUBJECT, 
+      BODY, ADDR, CC, BCC, 
+      ERROR_MSG, TRY_COUNT, REMARK
+      )
+    values (#{id,jdbcType=DECIMAL}, #{slipId,jdbcType=DECIMAL}, #{slipCode,jdbcType=VARCHAR},
+      #{slipType,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{sendTime,jdbcType=TIMESTAMP}, #{subject,jdbcType=VARCHAR}, 
+      #{body,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}, #{cc,jdbcType=VARCHAR}, #{bcc,jdbcType=VARCHAR}, 
+      #{errorMsg,jdbcType=VARCHAR}, #{tryCount,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <select id="queryByParams" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from T_SYS_EMAIL
+    WHERE 1 = 1
+    <if test="status != null">
+      AND status = #{status,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <insert id="insertSelective" parameterType="com.spro.entity.sys.Email" >
+    insert into t_sys_email
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="slipId != null" >
+        SLIP_ID,
+      </if>
+      <if test="slipCode != null" >
+        SLIP_CODE,
+      </if>
+      <if test="slipType != null" >
+        SLIP_TYPE,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME,
+      </if>
+      <if test="subject != null" >
+        SUBJECT,
+      </if>
+      <if test="body != null" >
+        BODY,
+      </if>
+      <if test="addr != null" >
+        ADDR,
+      </if>
+      <if test="cc != null" >
+        CC,
+      </if>
+      <if test="bcc != null" >
+        BCC,
+      </if>
+      <if test="errorMsg != null" >
+        ERROR_MSG,
+      </if>
+      <if test="tryCount != null" >
+        TRY_COUNT,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="slipId != null" >
+        #{slipId,jdbcType=DECIMAL},
+      </if>
+      <if test="slipCode != null" >
+        #{slipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="slipType != null" >
+        #{slipType,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="subject != null" >
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null" >
+        #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="cc != null" >
+        #{cc,jdbcType=VARCHAR},
+      </if>
+      <if test="bcc != null" >
+        #{bcc,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null" >
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="tryCount != null" >
+        #{tryCount,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.sys.Email" >
+    update t_sys_email
+    <set >
+      <if test="slipId != null" >
+        SLIP_ID = #{slipId,jdbcType=DECIMAL},
+      </if>
+      <if test="slipCode != null" >
+        SLIP_CODE = #{slipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="slipType != null" >
+        SLIP_TYPE = #{slipType,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sendTime != null" >
+        SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="subject != null" >
+        SUBJECT = #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null" >
+        BODY = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        ADDR = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="cc != null" >
+        CC = #{cc,jdbcType=VARCHAR},
+      </if>
+      <if test="bcc != null" >
+        BCC = #{bcc,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null" >
+        ERROR_MSG = #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="tryCount != null" >
+        TRY_COUNT = #{tryCount,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.sys.Email" >
+    update t_sys_email
+    set SLIP_ID = #{slipId,jdbcType=DECIMAL},
+      SLIP_CODE = #{slipCode,jdbcType=VARCHAR},
+      SLIP_TYPE = #{slipType,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      SEND_TIME = #{sendTime,jdbcType=TIMESTAMP},
+      SUBJECT = #{subject,jdbcType=VARCHAR},
+      BODY = #{body,jdbcType=VARCHAR},
+      ADDR = #{addr,jdbcType=VARCHAR},
+      CC = #{cc,jdbcType=VARCHAR},
+      BCC = #{bcc,jdbcType=VARCHAR},
+      ERROR_MSG = #{errorMsg,jdbcType=VARCHAR},
+      TRY_COUNT = #{tryCount,jdbcType=INTEGER},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <!-- 统计发送邮件 -->
+  <select id="countEmail" resultType="java.util.Map">
+      SELECT
+      count(email.STATUS)  as count,
+      dict.CHINESE_NAME as emailType
+      FROM
+      t_sys_email email,
+      t_bi_dictionary_entries dict
+      where email.`STATUS` = dict.ID
+      group by `STATUS`
+  </select>
+</mapper>

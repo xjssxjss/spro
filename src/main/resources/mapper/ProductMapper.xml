@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.ProductMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.material.Product" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+    <result column="PRODUCT_ALIAS_NAME" property="productAliasName" jdbcType="VARCHAR" />
+    <result column="PRODUCT_ENGLISH_NAME" property="productEnglishName" jdbcType="VARCHAR" />
+    <result column="PROC_BRAND_ID" property="brandId" jdbcType="INTEGER" />
+    <result column="PRODUCT_PICTURE_ID" property="productPictureId" jdbcType="INTEGER" />
+    <result column="STANARD_PRICE" property="stanardPrice" jdbcType="DECIMAL" />
+    <result column="IS_SAMPLE" property="isSample" jdbcType="BIT" />
+    <result column="IS_VALID" property="isValid" jdbcType="BIT" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <association property="brand" column="BRAND_ID" resultMap="brandMap"></association>
+  </resultMap>
+  
+  <resultMap id="brandMap" type="com.spro.entity.DictionaryEntries">
+    <id column="brandId" property="id"></id>
+  <result column="brandName" property="chineseName" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, CODE, PRODUCT_NAME, PRODUCT_ALIAS_NAME, PRODUCT_ENGLISH_NAME,  PRODUCT_PICTURE_ID,
+    STANARD_PRICE, IS_SAMPLE, IS_VALID, REMARK
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mt_product
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 根据条件查询所有产品 -->
+  <select id="queryByParams" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    proc.id,
+    proc.CODE as code, PRODUCT_NAME, PRODUCT_ALIAS_NAME, PRODUCT_ENGLISH_NAME, PRODUCT_PICTURE_ID,
+    STANARD_PRICE, IS_SAMPLE, proc.IS_VALID, REMARK,brand.CHINESE_NAME as brandName,brand.ID as brandId,proc.BRAND_ID as PROC_BRAND_ID
+    from t_mt_product proc,
+          t_bi_dictionary_entries brand
+    WHERE proc.brand_id = brand.id
+    and 1 = 1
+    <if test="code != null" >
+      and proc.CODE LIKE #{code,jdbcType=VARCHAR}
+    </if>
+    <if test="productName != null" >
+      and proc.PRODUCT_NAME LIKE #{productName,jdbcType=VARCHAR}
+    </if>
+    <if test="productAliasName != null" >
+      and proc.PRODUCT_ALIAS_NAME LIKE #{productAliasName,jdbcType=VARCHAR}
+    </if>
+    <if test="remark != null" >
+      and proc.REMARK LIKE #{remark,jdbcType=VARCHAR}
+    </if>
+    <if test="isValid != null" >
+      and proc.IS_VALID = #{isValid}
+    </if>
+    <if test="brandId != null" >
+      and proc.BRAND_ID = #{brandId}
+    </if>
+  </select>
+
+  <!-- 条件匹配查询结果数量 -->
+  <select id="queryCountByParams" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select
+    count(proc.id)
+    from t_mt_product proc
+    WHERE 1=1
+    <if test="code != null" >
+      and proc.CODE LIKE #{code,jdbcType=VARCHAR}
+    </if>
+    <if test="productName != null" >
+      and proc.PRODUCT_NAME LIKE #{productName,jdbcType=VARCHAR}
+    </if>
+    <if test="isValid != null" >
+      and proc.IS_VALID = #{isValid}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_mt_product
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.material.Product" >
+    insert into t_mt_product (ID, CODE, PRODUCT_NAME, 
+      PRODUCT_ALIAS_NAME, PRODUCT_ENGLISH_NAME, BRAND_ID, 
+      PRODUCT_PICTURE_ID, STANARD_PRICE, IS_SAMPLE, 
+      IS_VALID, REMARK)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
+      #{productAliasName,jdbcType=VARCHAR}, #{productEnglishName,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER}, 
+      #{productPictureId,jdbcType=INTEGER}, #{stanardPrice,jdbcType=DECIMAL}, 0,
+      1, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.material.Product" >
+    insert into t_mt_product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="code != null" >
+        CODE,
+      </if>
+      <if test="productName != null" >
+        PRODUCT_NAME,
+      </if>
+      <if test="productAliasName != null" >
+        PRODUCT_ALIAS_NAME,
+      </if>
+      <if test="productEnglishName != null" >
+        PRODUCT_ENGLISH_NAME,
+      </if>
+      <if test="brandId != null" >
+        BRAND_ID,
+      </if>
+      <if test="productPictureId != null" >
+        PRODUCT_PICTURE_ID,
+      </if>
+      <if test="stanardPrice != null" >
+        STANARD_PRICE,
+      </if>
+      <if test="isSample != null" >
+        IS_SAMPLE,
+      </if>
+      <if test="isValid != null" >
+        IS_VALID,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productAliasName != null" >
+        #{productAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="productEnglishName != null" >
+        #{productEnglishName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="productPictureId != null" >
+        #{productPictureId,jdbcType=INTEGER},
+      </if>
+      <if test="stanardPrice != null" >
+        #{stanardPrice,jdbcType=DECIMAL},
+      </if>
+      0,1
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.material.Product" >
+    update t_mt_product
+    <set >
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productAliasName != null" >
+        PRODUCT_ALIAS_NAME = #{productAliasName,jdbcType=VARCHAR},
+      </if>
+      <if test="productEnglishName != null" >
+        PRODUCT_ENGLISH_NAME = #{productEnglishName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        BRAND_ID = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="productPictureId != null" >
+        PRODUCT_PICTURE_ID = #{productPictureId,jdbcType=INTEGER},
+      </if>
+      <if test="stanardPrice != null" >
+        STANARD_PRICE = #{stanardPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="isSample != null" >
+        IS_SAMPLE = #{isSample,jdbcType=BIT},
+      </if>
+      <if test="isValid != null" >
+        IS_VALID = #{isValid,jdbcType=BIT},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.material.Product" >
+    update t_mt_product
+    set CODE = #{code,jdbcType=VARCHAR},
+      PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      PRODUCT_ALIAS_NAME = #{productAliasName,jdbcType=VARCHAR},
+      PRODUCT_ENGLISH_NAME = #{productEnglishName,jdbcType=VARCHAR},
+      BRAND_ID = #{brandId,jdbcType=INTEGER},
+      PRODUCT_PICTURE_ID = #{productPictureId,jdbcType=INTEGER},
+      STANARD_PRICE = #{stanardPrice,jdbcType=DECIMAL},
+      IS_SAMPLE = #{isSample,jdbcType=BIT},
+      IS_VALID = #{isValid,jdbcType=BIT},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

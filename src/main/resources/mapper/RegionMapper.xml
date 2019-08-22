@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.RegionMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.sys.Region" >
+    <id column="region_id" property="regionId" jdbcType="VARCHAR" />
+    <result column="region_name" property="regionName" jdbcType="VARCHAR" />
+    <result column="region_short_name" property="regionShortName" jdbcType="VARCHAR" />
+    <result column="region_code" property="regionCode" jdbcType="VARCHAR" />
+    <result column="region_parent_id" property="regionParentId" jdbcType="VARCHAR" />
+    <result column="region_level" property="regionLevel" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    region_id, region_name, region_short_name, region_code, region_parent_id, region_level
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_region
+    where region_id = #{regionId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryByParams" resultMap="BaseResultMap" parameterType="java.util.Map">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM
+      T_SYS_REGION
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_sys_region
+    where region_id = #{regionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.sys.Region" >
+    insert into t_sys_region (region_id, region_name, region_short_name, 
+      region_code, region_parent_id, region_level
+      )
+    values (#{regionId,jdbcType=VARCHAR}, #{regionName,jdbcType=VARCHAR}, #{regionShortName,jdbcType=VARCHAR}, 
+      #{regionCode,jdbcType=VARCHAR}, #{regionParentId,jdbcType=VARCHAR}, #{regionLevel,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.sys.Region" >
+    insert into t_sys_region
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="regionName != null" >
+        region_name,
+      </if>
+      <if test="regionShortName != null" >
+        region_short_name,
+      </if>
+      <if test="regionCode != null" >
+        region_code,
+      </if>
+      <if test="regionParentId != null" >
+        region_parent_id,
+      </if>
+      <if test="regionLevel != null" >
+        region_level,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="regionId != null" >
+        #{regionId,jdbcType=VARCHAR},
+      </if>
+      <if test="regionName != null" >
+        #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionShortName != null" >
+        #{regionShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionCode != null" >
+        #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="regionParentId != null" >
+        #{regionParentId,jdbcType=VARCHAR},
+      </if>
+      <if test="regionLevel != null" >
+        #{regionLevel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.sys.Region" >
+    update t_sys_region
+    <set >
+      <if test="regionName != null" >
+        region_name = #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionShortName != null" >
+        region_short_name = #{regionShortName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionCode != null" >
+        region_code = #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="regionParentId != null" >
+        region_parent_id = #{regionParentId,jdbcType=VARCHAR},
+      </if>
+      <if test="regionLevel != null" >
+        region_level = #{regionLevel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where region_id = #{regionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.sys.Region" >
+    update t_sys_region
+    set region_name = #{regionName,jdbcType=VARCHAR},
+      region_short_name = #{regionShortName,jdbcType=VARCHAR},
+      region_code = #{regionCode,jdbcType=VARCHAR},
+      region_parent_id = #{regionParentId,jdbcType=VARCHAR},
+      region_level = #{regionLevel,jdbcType=INTEGER}
+    where region_id = #{regionId,jdbcType=VARCHAR}
+  </update>
+</mapper>

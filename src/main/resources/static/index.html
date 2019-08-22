@@ -1,0 +1,336 @@
+<html>
+<title>spro管理系统</title>
+<!-- 引入样式 -->
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src = "https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"> </script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<style>
+    .inner{
+        height:300px;
+        background-color:#ccc;
+    }
+
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 200px;
+        min-height: 400px;
+    }
+
+    .input-cls{
+        -webkit-appearance: none;
+        background-color: #fff;
+        background-image: none;
+        border-radius: 4px;
+        border: 1px solid #dcdfe6;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        color: #606266;
+        display: inline-block;
+        font-size: inherit;
+        height: 40px;
+        line-height: 40px;
+        outline: 0;
+        padding: 0 15px;
+        -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        width: 100%;
+    },
+
+    .v-enter,
+    .v-leave-to{
+        opacity: 0;
+    },
+    .v-enter-active,
+    .v-leave-active{
+        transition: all 3s ease;
+    }
+
+    <!--自定义两组动画样式-->
+
+</style>
+<body>
+<!--<div id="app">
+    <button @click="lang">浪起来</button>
+    <button @click="show">低调</button>
+    <h4>{{ message }}</h4>
+</div> -->
+
+<div id="car">
+
+    <router-view></router-view>
+
+    <el-menu
+            default-active="1"
+            :background-color="btnColor"
+            text-color="#fff"
+            active-text-color="#ffd04b" class="el-menu-vertical-demo" :collapse="!isCollapse">
+        <el-submenu :disabled="item.status" v-for="item in menus" :index="item.level" :key="item.name">
+            <template slot="title">
+                <i :class="item.icon"></i>
+                <span slot="title" background-color="#000000" >{{item.name}}</span>
+            </template>
+            <template v-for="child in item.children" >
+                <template v-if='!child.children'>
+                    <el-menu-item text-color="#ccc" @click="menuClk(child.url)" :index="child.level" :key="child.name">
+                        {{child.name}}</el-menu-item>
+                </template>
+
+                <template v-else>
+                    <el-submenu :index="child.level" :key="child.name">
+                        <template slot="title">
+                            <span slot="title">{{child.name}}</span>
+                        </template>
+                        <el-menu-item v-for="i in child.children" @click="menuClk(i.url)" :index="i.level" :key="i.name">
+                            {{i.name}}</el-menu-item>
+                    </el-submenu>
+                </template>
+            </template>
+
+        </el-submenu>
+    </el-menu>
+
+    <el-form :inline="true" :rules="rules" ref="carForm" :model="car" class="demo-form-inline">
+        <el-form-item label="id" prop="id">
+            <el-input v-model="car.id" placeholder="id"></el-input>
+        </el-form-item>
+        <el-form-item label="name"  prop="name">
+            <input class="input-cls" v-model="car.name" placeholder="name" @keyup.f2="onAdd" @keyup.enter="onAdd"></input>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onAdd" :style="{backgroundColor:btnColor}">添加</el-button>
+            <el-button type="primary" @click="getMenus">获取menu数据</el-button>
+            <el-button type="primary" @click="postMenus">获取postMenus数据</el-button>
+        </el-form-item>
+
+        <el-color-picker v-model="color1" @change = "changeColor"></el-color-picker>
+
+        <el-form-item label="搜索框">
+            <input class="input-cls" v-model="keywords" placeholder="请输入名称" v-color v-focus></input>
+        </el-form-item>
+    </el-form>
+
+    <el-table :data="search(keywords)"
+              style="width: 100%">
+        <el-table-column
+                prop="id"
+                label="id"
+                width="180">
+        </el-table-column>
+        <el-table-column
+                prop="name"
+                label="名称">
+        </el-table-column>
+        <el-table-column
+                label="日期">
+            <template slot-scope="scope">
+                {{scope.row.ctime | formatDate}}
+            </template>
+        </el-table-column>
+    </el-table>
+
+</div>
+<!--<div class="inner" id="inner" @click.capture="mao">
+    <button @click.stop="ct">戳它</button> -->
+
+</body>
+<script>
+
+    //自定义全局按键修饰符
+    Vue.config.keyCodes.f2 = 113
+
+    //自定义全局过滤器，过滤日期
+    Vue.filter('formatDate',function(date){
+        var dt = new Date(date)
+
+        var year = dt.getFullYear().toString().padStart(2,'0')
+        var month = (dt.getMonth() + 1).toString().padStart(2,'0')
+        var day = dt.getDate().toString().padStart(2,'0')
+
+        var yy = dt.getHours().toString().padStart(2,'0')
+        var mm = dt.getMinutes().toString().padStart(2,'0')
+        var ss = dt.getSeconds().toString().padStart(2,'0')
+
+        return `${year}-${month}-${day} ${yy}:${mm}:${ss}`
+    })
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: '猥琐发育，别浪!!',
+            intervalId : null
+        },
+        methods: {
+            lang() {
+                if(this.intervalId == null){
+                    this.intervalId = setInterval(() => {
+                        var start = this.message.substring(0,1)
+                        var end = this.message.substring(1)
+                        this.message = end + start
+                        console.log(this.message)
+                    },500)
+                } else {
+                    console.log("已经在浪了~~~~~")
+                }
+            },
+            show(){
+                clearInterval(this.intervalId)
+                this.intervalId = null
+            }
+        }
+    });
+
+    /*var inner = new Vue({
+        el:'#inner',
+        methods:{
+            ct(){
+                console.log('戳它');
+            },
+            mao(){
+                console.log('事件冒泡');
+            }
+        }
+    });
+    */
+
+    //vue自定义指令
+    /*Vue.directive('color',{
+        bind:function(el){
+            console.log(el)
+            //改变搜索框字体颜色
+            el.style.color = 'blue'
+        }
+    })*/
+
+    //vue自定义指令,让搜索框默认选中
+    Vue.directive('focus',{
+        inserted:function(el){
+            el.focus()
+        }
+    })
+
+
+    //设置vue-resource配置全军访问前缀
+    Vue.http.options.root = 'http://localhost:8086/spro/'
+    //全局启用emulateJSON
+    Vue.http.options.emulateJSON = true
+
+    var login = {
+        template:'<h1>登陆组件</h1>'
+    }
+
+    var register = {
+        template:'<h1>注册组件</h1>'
+    }
+
+
+    var router = new VueRouter({
+        //router路由中必须配置的两个参数，path跳转路径, component 如果path匹配到了，则显示相应的component组件模板对象
+        routes:[
+            {path:'/',component : login},
+            {path:'/register',component : register}
+        ]
+    })
+
+    var car = new Vue({
+        el:'#car',
+        data:{
+            color1:'#ccc',		//颜色选择
+            flag:false,
+            keywords:'',
+            btnColor:'#ccc',
+            car:{id:'',name:'',ctime:new Date()},
+            listCar:[{'id':1,name:'奔驰',ctime:new Date()},{'id':2,name:'宝马',ctime:new Date()}],
+            rules: {
+                name: [
+                    { required: true, message: '请输入名称', trigger: 'blur' },
+                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                ],
+            },
+            menus:[],
+            isCollapse:true
+
+            /*,
+            menus:[
+                {index:'1',url:'www.baidu.com',name:'工单管理',icon:'el-icon-location',children:[{index:'1-1',name:'流程操作',url:'www.google.com1',children:[{index:'1-1-1',name:'名称121212',url:'www.google.com'}]},{index:'1-2',name:'流程操作1',url:'www1.google.com2'}]},
+                {index:'2',url:'www.baidu.com',name:'物料管理',children:[{index:'2-1',name:'流程操作',url:'www.google.com3'},{index:'2-2',name:'流程操作1',url:'www1.google.com4'}]},
+                {index:'3',url:'www.baidu.com',name:'财务管理',children:[{index:'3-1',name:'流程操作',url:'www.google.com5'},{index:'3-2',name:'流程操作1',url:'www1.google.com6'}]},
+                {index:'4',url:'www.baidu.com',name:'运作管理',children:[{index:'4-1',name:'流程操作',url:'www.google.com7'},{index:'4-2',name:'流程操作1',url:'www1.google.com8'}]},
+                {index:'5',url:'www.baidu.com',name:'基础信息管理',children:[{index:'5-1',name:'流程操作',url:'www.google.com9'},{index:'5-2',name:'流程操作1',url:'www1.google.com10'}]}
+            ] */
+        },
+
+        created(){
+            this.getMenus()
+        },
+
+        methods:{
+            onAdd(){
+                this.$refs['carForm'].validate((valid) => {
+                    if (valid) {
+                        var car = {
+                            id:this.car.id,
+                            name:this.car.name,
+                            ctime:this.car.ctime
+                        }
+                        this.listCar.push(car)
+                        this.resetForm('carForm')
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            //搜索方法
+            search(keywords){
+                /*var newListCar = []
+                this.listCar.forEach((item,index) => {
+                    if(item.name.indexOf(keywords) != -1){
+                        newListCar.push(item)
+                    }
+                })
+                return newListCar*/
+
+                return this.listCar.filter(item=>{
+                    if(item.name.includes(keywords)){
+                        return item
+                    }
+                })
+            },
+            changeColor(color){
+                this.btnColor = color
+            },
+
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            menuClk(url){
+                console.log(url)
+            },
+            getMenus(){
+                this.$http.get('indexController/getMenus').then(function(result){
+                    if(result.ok){
+                        console.log(result.body)
+                        this.menus = result.body.data
+                    }
+
+                })
+            },
+            postMenus(){
+                this.$http.post('indexController/postMenus',{}).then(result=>{
+                    console.log(result.body)
+                })
+            }
+        },
+        directives:{
+            'color': {
+                bind: function(el){
+                    el.style.color = 'green'
+                }
+            }
+        },
+        router:router		//把路由对象注册到vm实例上，监听路由url，显示对应组件
+    });
+</script>
+</html>

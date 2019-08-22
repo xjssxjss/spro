@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spro.dao.SequenceCounterMapper" >
+  <resultMap id="BaseResultMap" type="com.spro.entity.sys.SequenceCounter" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="COUNTER" property="counter" jdbcType="INTEGER" />
+    <result column="CHANGE_DATE" property="changeDate" jdbcType="TIMESTAMP" />
+    <result column="RESET_MODE" property="resetMode" jdbcType="INTEGER" />
+    <result column="INIT_VALUE" property="initValue" jdbcType="INTEGER" />
+    <result column="INCREMENT" property="increment" jdbcType="INTEGER" />
+    <result column="SEQ_LENGTH" property="seqLength" jdbcType="INTEGER" />
+    <result column="SEPERATOR" property="seperator" jdbcType="VARCHAR" />
+    <result column="PREFIX" property="prefix" jdbcType="VARCHAR" />
+    <result column="SUFFIX" property="suffix" jdbcType="VARCHAR" />
+    <result column="DATE_FORMAT" property="dateFormat" jdbcType="VARCHAR" />
+    <result column="VERSION" property="version" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, COUNTER, CHANGE_DATE, RESET_MODE, INIT_VALUE, INCREMENT, SEQ_LENGTH, SEPERATOR,
+    PREFIX, SUFFIX, DATE_FORMAT, VERSION
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from t_sys_sequence_counter
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <!-- querySequenceCounterByName -->
+  <select id="querySequenceCounterByName" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from t_sys_sequence_counter
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_sys_sequence_counter
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.spro.entity.sys.SequenceCounter" >
+    insert into t_sys_sequence_counter (ID, NAME, COUNTER,
+    CHANGE_DATE, RESET_MODE, INIT_VALUE,
+    INCREMENT, SEQ_LENGTH, SEPERATOR,
+    PREFIX, SUFFIX, DATE_FORMAT,
+    VERSION)
+    values (#{id,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{counter,jdbcType=INTEGER},
+    #{changeDate,jdbcType=TIMESTAMP}, #{resetMode,jdbcType=INTEGER}, #{initValue,jdbcType=INTEGER},
+    #{increment,jdbcType=INTEGER}, #{seqLength,jdbcType=INTEGER}, #{seperator,jdbcType=VARCHAR},
+    #{prefix,jdbcType=VARCHAR}, #{suffix,jdbcType=VARCHAR}, #{dateFormat,jdbcType=VARCHAR},
+    #{version,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.spro.entity.sys.SequenceCounter" >
+    insert into t_sys_sequence_counter
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="counter != null" >
+        COUNTER,
+      </if>
+      <if test="changeDate != null" >
+        CHANGE_DATE,
+      </if>
+      <if test="resetMode != null" >
+        RESET_MODE,
+      </if>
+      <if test="initValue != null" >
+        INIT_VALUE,
+      </if>
+      <if test="increment != null" >
+        INCREMENT,
+      </if>
+      <if test="seqLength != null" >
+        SEQ_LENGTH,
+      </if>
+      <if test="seperator != null" >
+        SEPERATOR,
+      </if>
+      <if test="prefix != null" >
+        PREFIX,
+      </if>
+      <if test="suffix != null" >
+        SUFFIX,
+      </if>
+      <if test="dateFormat != null" >
+        DATE_FORMAT,
+      </if>
+      <if test="version != null" >
+        VERSION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="counter != null" >
+        #{counter,jdbcType=INTEGER},
+      </if>
+      <if test="changeDate != null" >
+        #{changeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resetMode != null" >
+        #{resetMode,jdbcType=INTEGER},
+      </if>
+      <if test="initValue != null" >
+        #{initValue,jdbcType=INTEGER},
+      </if>
+      <if test="increment != null" >
+        #{increment,jdbcType=INTEGER},
+      </if>
+      <if test="seqLength != null" >
+        #{seqLength,jdbcType=INTEGER},
+      </if>
+      <if test="seperator != null" >
+        #{seperator,jdbcType=VARCHAR},
+      </if>
+      <if test="prefix != null" >
+        #{prefix,jdbcType=VARCHAR},
+      </if>
+      <if test="suffix != null" >
+        #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="dateFormat != null" >
+        #{dateFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spro.entity.sys.SequenceCounter" >
+    update t_sys_sequence_counter
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="counter != null" >
+        COUNTER = #{counter,jdbcType=INTEGER},
+      </if>
+      <if test="changeDate != null" >
+        CHANGE_DATE = #{changeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resetMode != null" >
+        RESET_MODE = #{resetMode,jdbcType=INTEGER},
+      </if>
+      <if test="initValue != null" >
+        INIT_VALUE = #{initValue,jdbcType=INTEGER},
+      </if>
+      <if test="increment != null" >
+        INCREMENT = #{increment,jdbcType=INTEGER},
+      </if>
+      <if test="seqLength != null" >
+        SEQ_LENGTH = #{seqLength,jdbcType=INTEGER},
+      </if>
+      <if test="seperator != null" >
+        SEPERATOR = #{seperator,jdbcType=VARCHAR},
+      </if>
+      <if test="prefix != null" >
+        PREFIX = #{prefix,jdbcType=VARCHAR},
+      </if>
+      <if test="suffix != null" >
+        SUFFIX = #{suffix,jdbcType=VARCHAR},
+      </if>
+      <if test="dateFormat != null" >
+        DATE_FORMAT = #{dateFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        VERSION = #{version,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spro.entity.sys.SequenceCounter" >
+    update t_sys_sequence_counter
+    set NAME = #{name,jdbcType=VARCHAR},
+      COUNTER = #{counter,jdbcType=INTEGER},
+      CHANGE_DATE = #{changeDate,jdbcType=TIMESTAMP},
+      RESET_MODE = #{resetMode,jdbcType=INTEGER},
+      INIT_VALUE = #{initValue,jdbcType=INTEGER},
+      INCREMENT = #{increment,jdbcType=INTEGER},
+      SEQ_LENGTH = #{seqLength,jdbcType=INTEGER},
+      SEPERATOR = #{seperator,jdbcType=VARCHAR},
+      PREFIX = #{prefix,jdbcType=VARCHAR},
+      SUFFIX = #{suffix,jdbcType=VARCHAR},
+      DATE_FORMAT = #{dateFormat,jdbcType=VARCHAR},
+      VERSION = #{version,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>
